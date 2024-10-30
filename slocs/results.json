@@ -1,0 +1,80 @@
+{
+    "file:///home/eniwealth/MoonUp/src/MoonUpBeaconFactory.sol": {
+        "language": "Solidity",
+        "code": 91,
+        "comment": 14,
+        "blank": 39
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/UniswapInteraction.sol": {
+        "language": "Solidity",
+        "code": 15,
+        "comment": 1,
+        "blank": 3
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/Proxy.sol": {
+        "language": "Solidity",
+        "code": 24,
+        "comment": 27,
+        "blank": 11
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/interfaces/IERC20.sol": {
+        "language": "Solidity",
+        "code": 11,
+        "comment": 58,
+        "blank": 9
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/interfaces/IBeacon.sol": {
+        "language": "Solidity",
+        "code": 4,
+        "comment": 9,
+        "blank": 2
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/interfaces/INonfungiblePositionManager.sol": {
+        "language": "Solidity",
+        "code": 30,
+        "comment": 16,
+        "blank": 3
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/MoonUpMarketProxy.sol": {
+        "language": "Solidity",
+        "code": 17,
+        "comment": 21,
+        "blank": 9
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/MoonUpMarketImplementation.sol": {
+        "language": "Solidity",
+        "code": 151,
+        "comment": 1,
+        "blank": 40
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/interfaces/IWETH.sol": {
+        "language": "Solidity",
+        "code": 10,
+        "comment": 1,
+        "blank": 1
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/interfaces/IUniswapV3Pool.sol": {
+        "language": "Solidity",
+        "code": 19,
+        "comment": 1,
+        "blank": 5
+    },
+    "file:///home/eniwealth/MoonUp/src/MoonUpMarket/interfaces/IUniswapFactory.sol": {
+        "language": "Solidity",
+        "code": 13,
+        "comment": 17,
+        "blank": 3
+    },
+    "file:///home/eniwealth/MoonUp/src/token/erc20.sol": {
+        "language": "Solidity",
+        "code": 17,
+        "comment": 1,
+        "blank": 11
+    },
+    "file:///home/eniwealth/MoonUp/src/Interfaces/IPumpFactory.sol": {
+        "language": "Solidity",
+        "code": 7,
+        "comment": 1,
+        "blank": 6
+    }
+}
