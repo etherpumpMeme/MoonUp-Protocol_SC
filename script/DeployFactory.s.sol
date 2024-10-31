@@ -6,23 +6,22 @@ import { MoonUpBeaconFactory } from "src/MoonUpBeaconFactory.sol";
 import { Script } from "forge-std/Script.sol";
 import { HelperConfig } from "./HelperConfig.s.sol";
 
-contract DeployMoonUp is Script {
-    function run() external returns (MoonUpBeaconFactory) {
+contract DeployMoonUpFactory is Script {
+    function run() external returns (address moonUpBeaconFactory) {
         HelperConfig helperConfig = new HelperConfig();
         HelperConfig.NetworkConfig memory config = helperConfig.getNetworkConfig();
 
         vm.startBroadcast();
-        MoonUpBeaconFactory moonUpBeaconFactory = new MoonUpBeaconFactory(
+        moonUpBeaconFactory = address(new MoonUpBeaconFactory(
             msg.sender,
             0.002 ether, 
             config.weth,
             config.NonfungiblePositionManager,
             config.UniswapV3Factory,
             config.totalTradeVolume
-            );
+            ));
             
         vm.stopBroadcast();
-        return moonUpBeaconFactory;
         
     }
 }

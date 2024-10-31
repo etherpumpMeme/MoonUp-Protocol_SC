@@ -9,9 +9,6 @@ MoonUp/src
 
 # Details
 
-
-Directory /home/eniwealth/MoonUp/src
-
 Total : 13 files,  409 codes, 168 comments, 142 blanks, all 719 lines
 
 [Summary](results.md) / Details / [Diff Summary](diff.md) / [Diff Details](diff-details.md)

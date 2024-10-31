@@ -5,6 +5,7 @@
 
 Contracts in scope: All files in
 MoonUp/src
+MoonUp/scripts
 
 
 # Details
@@ -50,7 +51,7 @@ Total : 13 files,  409 codes, 168 comments, 142 blanks, all 719 lines
 
 
 ## Technical Documentation
-Link: https://app.gitbook.com/invite/XX4R3sfqRlrZATQjxOeS/9WxBXzYJfMY23NvvyHv3
+Link: https://moonupmemes-organization.gitbook.io/moonup.meme
 
 ## Additional Information For Audit
 

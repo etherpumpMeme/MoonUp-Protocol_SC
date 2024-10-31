@@ -99,8 +99,6 @@ function test_setCreationFeeTo() public {
     assertEq(moonUpfactory.feeToSetter(), alice);
 
   }
-    // Check upgrade. assert new address 
-    // Check who can upgrade. assert who can upgrade
 
     function test_UpgradeImplementation() public createTokenPair{
       address newMoonUpImplementationAddress = _moonUpImplementation();
