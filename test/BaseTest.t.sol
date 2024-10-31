@@ -18,8 +18,6 @@ contract MoonUpBaseTest is Test {
     
     MoonUpMarket moonUpMarket;
 
-    MoonUpProxy moonUpProxy;
-
     MoonUpBeaconFactory moonUpfactory;
     
     uint256 TOTAL_TRADE_VOLUME  = 780_000_000;

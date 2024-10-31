@@ -67,7 +67,6 @@ contract MoonUpBeaconFactory is UpgradeableBeacon {
      * @param minExpected This is the minimum amount of tokens expected if creators want to buy
      */
 
-    //address _token, IWETH _weth, address _nfpm, address _uFactory, uint256 _total_Trade_Volume
 
     function createTokensAndPair(
         string memory name, 
@@ -82,7 +81,8 @@ contract MoonUpBeaconFactory is UpgradeableBeacon {
         
         moonupErc20 = address(new MoonUpERC20(name, symbol, _metadataURI));
         moonUpProxy = deployPool(address(moonupErc20));
-         
+        _mintTokensToMoonUpMarket(moonUpProxy, address(moonupErc20));
+
          if(buy == true){
             buyAmount = msg.value -  CREATION_FEE;
             
@@ -92,11 +92,11 @@ contract MoonUpBeaconFactory is UpgradeableBeacon {
          }
 
          tokenToPair[address(moonupErc20)] = moonUpProxy;
-         _mintTokensToMoonUpMarket(moonUpProxy, address(moonupErc20));
+         
 
          allPairs.push(moonUpProxy);
        
-        emit MoonUpBeaconFactory__TokensCreated(moonUpProxy, address(moonupErc20));
+        emit MoonUpBeaconFactory__TokensCreated(moonUpProxy, moonupErc20);
         
     }
 
