@@ -16,13 +16,21 @@ import {MoonUpProxy} from "./MoonUpMarket/MoonUpMarketProxy.sol";
 contract MoonUpBeaconFactory is UpgradeableBeacon {
 
     uint256 TOTAL_SUPPLY =  1_000_000_000;
+
     uint256 public CREATION_FEE;
+
     address public feeToSetter;
+
     address[] public allPairs;
+
     mapping(address => address) private tokenToPair;
+
     IWETH weth;
+
     address nonfungiblePositionManager;
+
     address uniswapV3Factory;
+    
     uint256 totalTradeVolume;
 
     event MoonUpBeaconFactory__TokensCreated(address MoonUpTokenPair, address MoonUpErc20);

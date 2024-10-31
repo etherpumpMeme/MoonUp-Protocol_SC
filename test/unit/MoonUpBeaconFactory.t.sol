@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import { MoonUpBaseTest } from "test/BaseTest.t.sol";
 import { IERC20 } from "src/MoonUpMarket/interfaces/IERC20.sol";
+import { MoonUpMarket } from "src/MoonUpMarket/MoonUpMarketImplementation.sol";
 
 contract MoonUpFactoryTest is MoonUpBaseTest{
     uint256 TOTAL_SUPPLY =  1_000_000_000;
@@ -15,7 +16,7 @@ contract MoonUpFactoryTest is MoonUpBaseTest{
 
     address moonupErc20;
 
-    uint256 CREATIONFEE_AND_BUY = 0.0029 ether;
+    uint256 CREATIONFEE_AND_BUY = 0.002000001 ether;
 
     modifier prankUser{
       vm.startPrank(alice);
@@ -36,7 +37,9 @@ contract MoonUpFactoryTest is MoonUpBaseTest{
         ("MoonToken", "MTN", "MoonTokenPump.co.za", 0, true);
       _;
     }
-
+    function _moonUpImplementation() internal virtual returns (address) {
+        return address(new MoonUpMarket());
+    }
     function test_MintedTotalSupplyToMarket() public createTokenPair {
       uint256 mintedTotalSupply = IERC20(moonupErc20).balanceOf(moonUpProxy);
       assertEq(mintedTotalSupply, TOTAL_SUPPLY );
@@ -56,8 +59,8 @@ contract MoonUpFactoryTest is MoonUpBaseTest{
       assertGt(userCurrentBalance, userBalanceBefore);
 
     }
-    function test_SendLessEthForCreationFee() public {
-      vm.prank(alice);
+    function test_SendLessEthForCreationFee() public prankUser {
+    
       vm.expectRevert();
         (moonupErc20, moonUpProxy)= moonUpfactory.createTokensAndPair{value: 0.0012 ether}
         ("MoonToken", "MTN", "MoonTokenPump.co.za", 0, false);
@@ -96,6 +99,28 @@ function test_setCreationFeeTo() public {
     assertEq(moonUpfactory.feeToSetter(), alice);
 
   }
+    // Check upgrade. assert new address 
+    // Check who can upgrade. assert who can upgrade
 
-   
-}
+    function test_UpgradeImplementation() public createTokenPair{
+      address newMoonUpImplementationAddress = _moonUpImplementation();
+      vm.prank(owner);
+      moonUpfactory.upgradeTo(newMoonUpImplementationAddress);
+      assertEq(newMoonUpImplementationAddress, moonUpfactory.implementation());
+
+    }
+
+  function test_OnlyOwnerCanUpgrade() public prankUser {
+    address newMoonUpImplementationAddress = _moonUpImplementation();
+    vm.expectRevert();
+    moonUpfactory.upgradeTo(newMoonUpImplementationAddress);
+  }
+
+  function test_CannotUpgradeToEOA() public {
+      vm.prank(owner);
+      vm.expectRevert();
+      moonUpfactory.upgradeTo(bob);
+  }
+    
+  
+  }

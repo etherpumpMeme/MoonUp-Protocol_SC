@@ -7,11 +7,7 @@ Contracts in scope: All files in
 MoonUp/src
 
 
-
 # Details
-
-
-Directory /home/eniwealth/MoonUp/src
 
 Total : 13 files,  409 codes, 168 comments, 142 blanks, all 719 lines
 
@@ -53,12 +49,15 @@ Total : 13 files,  409 codes, 168 comments, 142 blanks, all 719 lines
 | token | 1 | 17 | 1 | 11 | 29 |
 
 
-EntryPoint Contract: MoonUpBeaconFactory
+## Technical Documentation
+Link: https://app.gitbook.com/invite/XX4R3sfqRlrZATQjxOeS/9WxBXzYJfMY23NvvyHv3
 
-Fuction CreateTokenAndPool =====> Creates Token and deploys bounding curve
+## Additional Information For Audit
 
-Function Buy =====> Emits Buy Event Data when 
+The requirements for this audit are as follows:
 
-Function Sell =====> Emits Sell event data when successful and reverts on failure
+1. Gas Optimization: The Guild Audit security team is requested to conduct a comprehensive analysis focused on gas optimization. This involves identifying sections of the system where excessive gas consumption occurs and providing detailed recommendations for improvement. Recommendations should include both a written proof of concept and corrective code, demonstrating the specific changes needed.
 
-Function Uniswap Create Pool ====> Emits Pool address when successful and reverts on failure
+2. Vulnerability Assessment: The Guild Audit security team is expected to identify vulnerabilities across all severity levels, including high, medium, low, and informational issues within the protocol. For each high and medium severity finding, the report should include both a proof of concept and an accompanying proof of code, along with the necessary corrective code to resolve each issue.
+
+3. Security Review: Following the implementation of changes recommended in the initial audit, a follow-up review by the Guild Audit security team is requested to ensure that all updates have been accurately applied and that the protocol meets security standards.
