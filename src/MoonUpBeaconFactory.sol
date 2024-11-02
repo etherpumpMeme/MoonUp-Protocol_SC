@@ -15,7 +15,7 @@ import {MoonUpProxy} from "./MoonUpMarket/MoonUpMarketProxy.sol";
 
 contract MoonUpBeaconFactory is UpgradeableBeacon {
 
-    uint256 TOTAL_SUPPLY =  1_000_000_000;
+    uint256 TOTAL_SUPPLY =  1_000_000_000 * 1e18;
 
     uint256 public CREATION_FEE;
 

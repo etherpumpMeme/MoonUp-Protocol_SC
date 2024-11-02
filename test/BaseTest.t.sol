@@ -20,7 +20,7 @@ contract MoonUpBaseTest is Test {
 
     MoonUpBeaconFactory moonUpfactory;
     
-    uint256 TOTAL_TRADE_VOLUME  = 780_000_000;
+    uint256 TOTAL_TRADE_VOLUME  = 780_000_000 * 1e18;
 
     uint256 CREATION_FEE = 0.002 ether;
 

@@ -15,6 +15,8 @@ error MoonUpMarket__FAILED_TRANSACTION();
 
 error MoonUpMarket__CANNOT_INITIALIZE_TWICE();
 
+error MoonUpMarket__CANNOT_BUY_MORE_THAN_3_PERCENT();
+
 contract MoonUpMarket is UniswapInteraction {
 
     IERC20  public token;
@@ -24,10 +26,13 @@ contract MoonUpMarket is UniswapInteraction {
     uint256 private total_Trade_Volume;
     address private uniswapFactory;
     address private nonfungiblePositionManager;
-    uint160 private  TOKEN_LIQUIDITY_VOLUME = 200000000 * 1e18;
+    uint160 private TOKEN_LIQUIDITY_VOLUME = 200000000 * 1e18;
     uint160 private ETH_LIQUIDITY_VOLUME = 5 ether;
     uint256 private TOTAL_TOKEN_SUPPLY = 1_000_000_000 * 1e18;
-    uint256 private PERCENTAGE_HOLDING_PER_USER = (1_000_000_000 * 1e18) * 3 / 100;
+    uint256 private PERCENTAGE_HOLDING_PER_USER = 30_000_000 * 1e18;
+    uint256 constant initialPrice = 7692307691 wei;
+    uint256 private tokensSoldSoFar;
+
     mapping(address => uint256) private balances;
     bool isInitialized;
     address factory;
@@ -61,11 +66,10 @@ contract MoonUpMarket is UniswapInteraction {
         if(msg.value == 0){
             revert MoonUpMarket__INVALID_AMOUNT();
         }
-        uint256 fee = (msg.value * 10)/ 1000;
-        uint256 buyAmount = msg.value - fee;
-        uint256 tokenAmount = calculateToken(buyAmount);
+        uint256 fee = (0.003 ether * 10)/ 1000;
+        uint256 buyAmount = 0.003 ether - fee;
+        uint256 tokenAmount = getTokenQoute(buyAmount);
 
-        require (balances[msg.sender] + tokenAmount <= PERCENTAGE_HOLDING_PER_USER, "Balance Overflow");
         require(total_Trade_Volume >= tokenAmount, "Token Amount Greater than available Token");
 
         if(tokenAmount < minExpected){
@@ -73,11 +77,16 @@ contract MoonUpMarket is UniswapInteraction {
         }
 
         totalEth += msg.value;
-        total_Trade_Volume -= tokenAmount;
+        tokensSoldSoFar += tokenAmount;
         balances[msg.sender] += tokenAmount;
+
+        // if(balances[msg.sender] > PERCENTAGE_HOLDING_PER_USER){
+        //     revert MoonUpMarket__CANNOT_BUY_MORE_THAN_3_PERCENT();
+        // }
+        
         token.transfer(msg.sender, tokenAmount);
 
-        emit Buy(msg.sender, buyAmount, tokenAmount);
+        emit Buy(msg.sender, buyAmount, balances[msg.sender]);
 
         if(total_Trade_Volume == 0){
             isMarketOpen = false;
@@ -101,8 +110,8 @@ contract MoonUpMarket is UniswapInteraction {
 
         token.transferFrom(msg.sender, address(this), tokenAmount);
         totalEth -= ethAmount;
-        total_Trade_Volume += tokenAmount;
         balances[msg.sender] -= tokenAmount;
+        tokensSoldSoFar -= tokenAmount;
         (bool success,) = payable(msg.sender).call{value: ethAmountAfterFee}("");
         require(success, "transfer failed!");
         emit Sell(msg.sender, ethAmount, tokenAmount);
@@ -147,8 +156,8 @@ contract MoonUpMarket is UniswapInteraction {
         require(success, "transfer failed!");
     }
 
-    function calculateToken(uint256 amount) internal view returns(uint256 tokenAmount){
-        return tokenAmount = amount / getPrice();
+    function calculateToken(uint256 amount) public view returns(uint256 tokenAmount){
+       return (amount) * getPrice(); 
     }
 
     function calculateEth(uint256 amount) internal view returns(uint256 ethAmount){
@@ -160,7 +169,9 @@ contract MoonUpMarket is UniswapInteraction {
     }
 
     function getPrice() public view returns(uint256){
-        return 6 ether / total_Trade_Volume;
+        if(tokensSoldSoFar > 0) 
+        {return initialPrice + (tokensSoldSoFar * initialPrice / total_Trade_Volume);}
+        else {return initialPrice;}
     }
 
     function getAvailableToken() public view returns(uint256){
@@ -168,7 +179,7 @@ contract MoonUpMarket is UniswapInteraction {
     }
 
     function getTokenQoute (uint256 amount) public view returns(uint256){
-        return (amount * 1e18) / getPrice(); 
+        return (amount) * getPrice(); 
     }
 
     function getPriceOfAvailableTokens() external view returns(uint256){
@@ -176,7 +187,7 @@ contract MoonUpMarket is UniswapInteraction {
     }
 
     function getEthQoute (uint256 amount) external view returns(uint256){
-        return (amount * getPrice()) / 1e18; 
+        return (amount / getPrice()); 
     }
 
     function sqrt(uint160 x) internal pure returns (uint160 y) {
@@ -186,6 +197,10 @@ contract MoonUpMarket is UniswapInteraction {
             y = z;
             z = (x / z + z) / 2;
         }
+    }
+
+    function wethInContract() external view returns(uint256){
+        return weth.balanceOf(address(this));
     }
 
 
