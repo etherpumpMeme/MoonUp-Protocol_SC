@@ -33,6 +33,14 @@ contract MoonUpBeaconFactory is UpgradeableBeacon {
     
     uint256 totalTradeVolume;
 
+    
+    uint160 TOKEN_LIQUIDITY_VOLUME = 200000000 * 1e18;
+    uint160 ETH_LIQUIDITY_VOLUME = 5 ether;
+    uint256 TOTAL_TOKEN_SUPPLY = 1_000_000_000 * 1e18;
+    uint256 PERCENTAGE_HOLDING_PER_USER =  30_000_000 * 1e18;
+    uint64 initialPrice = 7692307691 wei;
+    
+
     event MoonUpBeaconFactory__TokensCreated(address MoonUpTokenPair, address MoonUpErc20);
 
     constructor(
@@ -59,13 +67,20 @@ contract MoonUpBeaconFactory is UpgradeableBeacon {
     }
 
     function deployPool(address token) internal returns (address moonUpProxy) {
+       
         moonUpProxy = address(new MoonUpProxy(address(this), 
             abi.encodeWithSelector(MoonUpMarket.initialize.selector, 
             token, 
             weth, 
             nonfungiblePositionManager, 
             uniswapV3Factory, 
-            totalTradeVolume)));
+            totalTradeVolume,
+            TOKEN_LIQUIDITY_VOLUME,
+            ETH_LIQUIDITY_VOLUME,
+            TOTAL_TOKEN_SUPPLY,
+            PERCENTAGE_HOLDING_PER_USER,
+            initialPrice
+            )));
     }
     /**
      * @dev This function is responsible for creating tokens and their respective pairs. 
