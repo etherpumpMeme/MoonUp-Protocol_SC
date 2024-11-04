@@ -80,8 +80,6 @@ contract MoonUpMarketTest is MoonUpBaseTest{
         IMoonUpMarketImplementation(MoonUpProxy).sell(0, 1);
         vm.stopPrank();
 
-    }
-
-   
+    }  
     
 }

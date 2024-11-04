@@ -176,7 +176,7 @@ contract MoonUpMarket is UniswapInteraction {
     }
 
     function getAvailableToken() public view returns(uint256){
-        return total_Trade_Volume;
+        return total_Trade_Volume - tokensSoldSoFar;
     }
 
     function getTokenQoute (uint256 amount) public view returns(uint256){
@@ -199,10 +199,5 @@ contract MoonUpMarket is UniswapInteraction {
             z = (x / z + z) / 2;
         }
     }
-
-    function wethInContract() external view returns(uint256){
-        return weth.balanceOf(address(this));
-    }
-
 
 }
