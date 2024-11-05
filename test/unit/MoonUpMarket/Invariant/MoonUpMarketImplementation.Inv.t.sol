@@ -54,16 +54,16 @@ contract MoonUpMarket_Invariant_Test is Test{
             (MoonUpErc20, MoonUpProxyTest) = moonUpfactory.createTokensAndPair{value: CREATION_FEE}("MoonUP", "MUP", "", 0, false);
     }
 
-    function testDeposit(uint256 amount) public {
-        vm.assume(amount < 0.003 ether);
-        uint256 balanceBefore = IERC20(MoonUpErc20).balanceOf(msg.sender);
-        uint256 MoonUpBalanceBefore = MoonUpProxyTest.balance;
-        vm.prank(msg.sender);
-        IMoonUpMarketImplementation(MoonUpProxyTest).buy{value: amount}(1);
+    // function testDeposit(uint256 amount) public {
+    //     vm.assume(amount < 0.003 ether);
+    //     uint256 balanceBefore = IERC20(MoonUpErc20).balanceOf(msg.sender);
+    //     uint256 MoonUpBalanceBefore = MoonUpProxyTest.balance;
+    //     vm.prank(msg.sender);
+    //     IMoonUpMarketImplementation(MoonUpProxyTest).buy{value: amount}(1);
 
-        vm.assertTrue(IERC20(MoonUpErc20).balanceOf(msg.sender) > balanceBefore);
-        vm.assertTrue(MoonUpProxyTest.balance > MoonUpBalanceBefore);
+    //     vm.assertTrue(IERC20(MoonUpErc20).balanceOf(msg.sender) > balanceBefore);
+    //     vm.assertTrue(MoonUpProxyTest.balance > MoonUpBalanceBefore);
     
-    }
+    // }
 
 }

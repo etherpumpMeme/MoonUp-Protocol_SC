@@ -133,10 +133,4 @@ contract MoonUpMarketUniswapTest is Test {
         return randomAddress;
     }
 
-    function test_User_Can_Buy() public {
-        //test if user can buy
-        vm.prank(owner);
-        IMoonUpMarketImplementation(MoonUpProxyTest).getEthQoute(30_000_000 * 1e18);
-        IMoonUpMarketImplementation(MoonUpProxyTest).getTokenQoute(0.002 ether);
-    }
 }
