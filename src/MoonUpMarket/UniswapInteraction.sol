@@ -13,6 +13,11 @@ contract UniswapInteraction{
         IUniswapV3Pool(poolAddress).initialize(sqrtPrice64);
     }
 
+    function call0(address poolAddress) view internal returns(uint160){
+        (uint160 sqrtPriceX96,,,,,,)= IUniswapV3Pool(poolAddress).slot0();
+        return sqrtPriceX96;
+    }
+
     function mint(address _nonfungiblePositionManager, INonfungiblePositionManager.MintParams memory params) internal returns(uint256, uint128, uint256, uint256) {
         return INonfungiblePositionManager(_nonfungiblePositionManager).mint(params);
     }

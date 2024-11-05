@@ -43,6 +43,7 @@ contract MoonUpMarket is UniswapInteraction {
     event Buy(address indexed buyer, uint256 ethAmount, uint256 tokenAmount);
     event Sell(address indexed seller, uint256 ethAmount, uint256 tokenAmount);
     event UniswapPoolCreated(address indexed poolAddress);
+    event AmountGathered(uint256 indexed amount);
     
     function initialize(address _token, IWETH _weth, address _nfpm, address _uFactory, uint256 _total_Trade_Volume, uint160 Token_Liquidity, uint160 Eth_Liquidity, uint256 total_token_supply, uint256 percentage_holding, uint64 initialprice) public {
         if (isInitialized == true){
@@ -78,7 +79,9 @@ contract MoonUpMarket is UniswapInteraction {
         uint256 buyAmount = msg.value - fee;
         uint256 tokenAmount = getTokenQoute(buyAmount);
 
-        require(total_Trade_Volume >= tokenAmount, "Token Amount Greater than available Token");
+        if(total_Trade_Volume - tokensSoldSoFar < tokenAmount){
+            tokenAmount = total_Trade_Volume - tokensSoldSoFar;
+        }
 
         if(tokenAmount < minExpected){
             revert MoonUpMarket__FAILED_TRANSACTION();
@@ -94,10 +97,16 @@ contract MoonUpMarket is UniswapInteraction {
         
         token.transfer(msg.sender, tokenAmount);
 
+        if(msg.value > getEthQoute(tokenAmount)){
+            uint256 refund = msg.value - getEthQoute(tokenAmount);
+            msg.sender.call{value:refund};
+        }
+
         emit Buy(msg.sender, buyAmount, tokenAmount);
 
-        if(total_Trade_Volume == 0){
+        if(total_Trade_Volume - tokensSoldSoFar == 0){
             isMarketOpen = false;
+            emit AmountGathered(address(this).balance);
             addToUniswap();
         }
     }
@@ -129,8 +138,8 @@ contract MoonUpMarket is UniswapInteraction {
         require(address(this).balance >= 6 ether, "Insufficient balance to add to Uniswap");
         depositWeth(5 ether);
         address poolAddress = create(uniswapFactory, address(token), address(weth), 500);
-        uint160 price = ETH_LIQUIDITY_VOLUME / TOKEN_LIQUIDITY_VOLUME;
-        uint160 sqrtPrice96 = (sqrt(price)*2) **96;
+        uint160 price = (ETH_LIQUIDITY_VOLUME / (TOKEN_LIQUIDITY_VOLUME)/1e18);
+        uint160 sqrtPrice96 = call0(poolAddress);//(sqrt(price)*2) **96;
         initialized(poolAddress, sqrtPrice96);
         
         INonfungiblePositionManager.MintParams memory params = INonfungiblePositionManager.MintParams({
@@ -179,19 +188,28 @@ contract MoonUpMarket is UniswapInteraction {
         return total_Trade_Volume - tokensSoldSoFar;
     }
 
+    /*
+    *@dev takes in amount in ether and returns tokens 
+    */
     function getTokenQoute (uint256 amount) public view returns(uint256){
-        return (amount) * getPrice(); 
+        return ((amount) / getPrice())* 1e18; 
     }
 
+    /*
+    *@dev returns total amount of ether available tokens left sale will cost 
+    */
     function getPriceOfAvailableTokens() external view returns(uint256){
-        return getTokenQoute(getAvailableToken());
+        return getEthQoute(getAvailableToken());
     }
 
+    /*
+    *@dev takes amount in tokens and returns cost of tokens in ether
+    */
     function getEthQoute (uint256 amount) public view returns(uint256){
-        return (amount / getPrice()); 
+        return (amount * getPrice())/1e18; 
     }
 
-    function sqrt(uint160 x) internal pure returns (uint160 y) {
+    function sqrt(uint160 x) public pure returns (uint160 y) {
         uint160 z = (x + 1) / 2;
         y = x;
         while (z < y) {

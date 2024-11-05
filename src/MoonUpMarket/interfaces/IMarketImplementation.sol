@@ -6,6 +6,8 @@ import "./IERC20.sol";
 
 interface IMoonUpMarketImplementation {
     function token() external view returns (IERC20);
+    function sqrt(uint160) external view returns(uint160);
+    
     function calculateToken(uint256 amount) external view returns(uint256 tokenAmount);
     function initialize(address _token, IWETH _weth, address _nfpm, address _uFactory, uint256 _total_Trade_Volume) external; 
     function buy(uint256 minExpected) external payable;

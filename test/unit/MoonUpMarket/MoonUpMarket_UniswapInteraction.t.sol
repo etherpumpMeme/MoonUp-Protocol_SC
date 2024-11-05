@@ -79,7 +79,7 @@ contract MoonUpMarketUniswapTest is Test {
     }
 
     function test_fuzz_deposit() public {
-        for (uint256 i; i < 41; i++) {
+        for (uint256 i; i < 44; i++) {
             address user = generateRandomAddress(newUser); //makeAddr(vm.toString(abi.encodePacked(block.timestamp, block.number + i, i)));
             uint256 balanceBefore = IERC20(MoonUpErc20).balanceOf(user);
             uint256 moonUpBalanceBefore = MoonUpProxyTest.balance;
@@ -92,7 +92,7 @@ contract MoonUpMarketUniswapTest is Test {
             if (AvailableToken < (30_000_000 * 1e18)) {
                 vm.prank(user);
                 IMoonUpMarketImplementation(MoonUpProxyTest).buy{
-                    value: value
+                    value: value + 0.1 ether
                 }(1);
                 vm.assertTrue(
                     IERC20(MoonUpErc20).balanceOf(user) > balanceBefore
@@ -102,7 +102,7 @@ contract MoonUpMarketUniswapTest is Test {
                 vm.prank(user);
               
                 IMoonUpMarketImplementation(MoonUpProxyTest).buy{
-                    value: 0.002 ether
+                    value: 0.2 ether
                 }(1);
                 vm.assertTrue(
                     IERC20(MoonUpErc20).balanceOf(user) > balanceBefore
@@ -111,15 +111,8 @@ contract MoonUpMarketUniswapTest is Test {
             }
 
             newUser = user;
-
-            IMoonUpMarketImplementation(MoonUpProxyTest).getPrice();
-
-            IMoonUpMarketImplementation(MoonUpProxyTest).getEthQoute(30_000_000 * 1e18);
         }
-        
-        IMoonUpMarketImplementation(MoonUpProxyTest).getAvailableToken();
-        //assert(IERC20(MoonUpErc20).balanceOf(MoonUpProxyTest) == 0);
-        MoonUpProxyTest.balance;
+
     }
 
     function generateRandomAddress(address user) public view returns (address) {
@@ -131,6 +124,16 @@ contract MoonUpMarketUniswapTest is Test {
         // Convert the hash to an address
         address randomAddress = address(uint160(randomHash));
         return randomAddress;
+    }
+
+    function test_Prices() public view{
+        IMoonUpMarketImplementation(MoonUpProxyTest).getTokenQoute(230769230730000000);
+        IMoonUpMarketImplementation(MoonUpProxyTest).getEthQoute(30_000_000 * 1e18);
+        IMoonUpMarketImplementation(MoonUpProxyTest).getPriceOfAvailableTokens();
+    }
+
+    function testSqrt() public{
+    IMoonUpMarketImplementation(MoonUpProxyTest).sqrt(25000000000);
     }
 
 }
