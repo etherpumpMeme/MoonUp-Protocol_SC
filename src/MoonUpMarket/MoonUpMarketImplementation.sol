@@ -22,7 +22,6 @@ contract MoonUpMarket is UniswapInteraction {
     IERC20  public token;
     IWETH public weth;
     bool private isMarketOpen;
-    uint256 private totalEth;
     uint256 private total_Trade_Volume;
     address private uniswapFactory;
     address private nonfungiblePositionManager;
@@ -90,7 +89,6 @@ contract MoonUpMarket is UniswapInteraction {
             revert MoonUpMarket__FAILED_TRANSACTION();
         }
 
-        totalEth += msg.value;
         tokensSoldSoFar += tokenAmount;
         balances[msg.sender] += tokenAmount;
 
@@ -120,6 +118,7 @@ contract MoonUpMarket is UniswapInteraction {
         }
 
         uint256 tokenAmount = amount;
+        tokensSoldSoFar -= tokenAmount;
         uint256 ethAmount = getEthQoute(tokenAmount);
         uint256 fee = (ethAmount) * 10 / 1000;
         uint256 ethAmountAfterFee = ethAmount - fee;
@@ -132,9 +131,7 @@ contract MoonUpMarket is UniswapInteraction {
         }
 
         token.transferFrom(msg.sender, address(this), tokenAmount);
-        totalEth -= ethAmount;
         balances[msg.sender] -= tokenAmount;
-        tokensSoldSoFar -= tokenAmount;
         (bool success,) = payable(msg.sender).call{value: ethAmountAfterFee}("");
         require(success, "transfer failed!");
         emit Sell(msg.sender, ethAmount, tokenAmount);
