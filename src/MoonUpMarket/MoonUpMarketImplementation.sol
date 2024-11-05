@@ -44,6 +44,7 @@ contract MoonUpMarket is UniswapInteraction {
     event Sell(address indexed seller, uint256 ethAmount, uint256 tokenAmount);
     event UniswapPoolCreated(address indexed poolAddress);
     event AmountGathered(uint256 indexed amount);
+    event TokenWithdrawn(address indexed receiver, uint256 indexed amount, address sender);
     
     function initialize(address _token, IWETH _weth, address _nfpm, address _uFactory, uint256 _total_Trade_Volume, uint160 Token_Liquidity, uint160 Eth_Liquidity, uint256 total_token_supply, uint256 percentage_holding, uint64 initialprice) public {
         if (isInitialized == true){
@@ -177,11 +178,13 @@ contract MoonUpMarket is UniswapInteraction {
         emit UniswapPoolCreated(poolAddress);
         }
 
-    function withdrawFees() external {
+    function withdrawToken() external {
         require(msg.sender == factory, "Only owner can withdraw fees");
         require(!isMarketOpen, "Market is still open");
-        (bool success,) = payable(factory).call{value: address(this).balance}("");
-        require(success, "transfer failed!");
+        uint256 amount = token.balanceOf(address(this));
+        token.transferFrom(address(this), factory,amount);
+
+        emit TokenWithdrawn(factory, amount, address(this));
     }
 
     
