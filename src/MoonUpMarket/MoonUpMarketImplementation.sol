@@ -76,6 +76,8 @@ contract MoonUpMarket is UniswapInteraction {
             revert MoonUpMarket__INVALID_AMOUNT();
         }
         uint256 fee = (msg.value * 10)/ 1000;
+        (bool success,) = factory.call{value: fee}("");
+        require(success, "Transfer Failed");
         uint256 buyAmount = msg.value - fee;
         uint256 tokenAmount = getTokenQoute(buyAmount);
 
@@ -120,6 +122,9 @@ contract MoonUpMarket is UniswapInteraction {
         uint256 ethAmount = getEthQoute(tokenAmount);
         uint256 fee = (ethAmount) * 10 / 1000;
         uint256 ethAmountAfterFee = ethAmount - fee;
+
+        (bool Successful,) = factory.call{value: fee}("");
+        require(Successful, "Transfer Failed");
         
         if(ethAmount < minExpected){
             revert MoonUpMarket__FAILED_TRANSACTION();
@@ -136,10 +141,16 @@ contract MoonUpMarket is UniswapInteraction {
 
     function addToUniswap() internal {
         require(address(this).balance >= 6 ether, "Insufficient balance to add to Uniswap");
+
+        uint256 platformPercent = 10;
+        uint256 platformCut = (address(this).balance * platformPercent) / 100;
+        (bool success, ) = address(factory).call{value: platformCut}("");
+        require(success, "Transfer Not Successful");
+
         depositWeth(5 ether);
         address poolAddress = create(uniswapFactory, address(token), address(weth), 500);
-        uint160 price = (ETH_LIQUIDITY_VOLUME / (TOKEN_LIQUIDITY_VOLUME)/1e18);
-        uint160 sqrtPrice96 = call0(poolAddress);//(sqrt(price)*2) **96;
+        uint160 price = uint160((address(this).balance / (TOKEN_LIQUIDITY_VOLUME)/1e18));
+        uint160 sqrtPrice96 = (sqrt(price)*2) **96;
         initialized(poolAddress, sqrtPrice96);
         
         INonfungiblePositionManager.MintParams memory params = INonfungiblePositionManager.MintParams({

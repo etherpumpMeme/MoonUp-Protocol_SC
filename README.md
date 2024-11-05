@@ -62,3 +62,7 @@ The requirements for this audit are as follows:
 2. Vulnerability Assessment: The Guild Audit security team is expected to identify vulnerabilities across all severity levels, including high, medium, low, and informational issues within the protocol. For each high and medium severity finding, the report should include both a proof of concept and an accompanying proof of code, along with the necessary corrective code to resolve each issue.
 
 3. Security Review: Following the implementation of changes recommended in the initial audit, a follow-up review by the Guild Audit security team is requested to ensure that all updates have been accurately applied and that the protocol meets security standards.
+
+## Known Issues
+- SqrtX96 causing overflow
+- Invariant test case not fully implemented
