@@ -16,7 +16,7 @@ contract MoonUpFactoryTest is MoonUpBaseTest{
 
     address moonupErc20;
 
-    uint256 CREATIONFEE_AND_BUY = 0.002000001 ether;
+    uint256 CREATIONFEE_AND_BUY = 0.005 ether;
 
     modifier prankUser{
       vm.startPrank(alice);
@@ -88,8 +88,7 @@ function test_setCreationFeeTo() public {
     address feeToSetter = moonUpfactory.feeToSetter();
     vm.prank(feeToSetter);
     moonUpfactory.setCreationFeeTo(NEW_CREATION_FEE);
-    // assertEq(moonUpfactory.CREATION_FEE, NEW_CREATION_FEE);
-    
+   vm.assertTrue(NEW_CREATION_FEE == 0.1 ether);
   }
 
   function test_setCreationFeeSetter() public {

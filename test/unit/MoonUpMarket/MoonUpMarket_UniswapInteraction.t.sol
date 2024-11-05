@@ -79,7 +79,7 @@ contract MoonUpMarketUniswapTest is Test {
     }
 
     function test_fuzz_deposit() public {
-        for (uint256 i; i < 32; i++) {
+        for (uint256 i; i < 41; i++) {
             address user = generateRandomAddress(newUser); //makeAddr(vm.toString(abi.encodePacked(block.timestamp, block.number + i, i)));
             uint256 balanceBefore = IERC20(MoonUpErc20).balanceOf(user);
             uint256 moonUpBalanceBefore = MoonUpProxyTest.balance;
@@ -87,11 +87,12 @@ contract MoonUpMarketUniswapTest is Test {
             uint256 AvailableToken = IMoonUpMarketImplementation(
                 MoonUpProxyTest
             ).getAvailableToken();
+
+            uint256 value = IMoonUpMarketImplementation(MoonUpProxyTest).getEthQoute(AvailableToken);
             if (AvailableToken < (30_000_000 * 1e18)) {
                 vm.prank(user);
                 IMoonUpMarketImplementation(MoonUpProxyTest).buy{
-                    value: IMoonUpMarketImplementation(MoonUpProxyTest)
-                        .getEthQoute(AvailableToken)
+                    value: value
                 }(1);
                 vm.assertTrue(
                     IERC20(MoonUpErc20).balanceOf(user) > balanceBefore
@@ -99,10 +100,9 @@ contract MoonUpMarketUniswapTest is Test {
                 vm.assertTrue(MoonUpProxyTest.balance > moonUpBalanceBefore);
             } else {
                 vm.prank(user);
-                uint256 valueToBuy = IMoonUpMarketImplementation(MoonUpProxyTest).getEthQoute(30_000_000 * 1e18);
-
+              
                 IMoonUpMarketImplementation(MoonUpProxyTest).buy{
-                    value: 0.003 ether
+                    value: 0.002 ether
                 }(1);
                 vm.assertTrue(
                     IERC20(MoonUpErc20).balanceOf(user) > balanceBefore
@@ -111,6 +111,10 @@ contract MoonUpMarketUniswapTest is Test {
             }
 
             newUser = user;
+
+            IMoonUpMarketImplementation(MoonUpProxyTest).getPrice();
+
+            IMoonUpMarketImplementation(MoonUpProxyTest).getEthQoute(30_000_000 * 1e18);
         }
         
         IMoonUpMarketImplementation(MoonUpProxyTest).getAvailableToken();
